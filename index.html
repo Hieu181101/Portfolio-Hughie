@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Hieu Tran — Software Engineer</title>
+
+<!-- Geist: open-source neo-grotesque, the closest free match to the reference.
+     To swap it, change these two lines and the --sans stack below. Good
+     alternatives: Instrument Sans (Google), Switzer / General Sans (Fontshare). -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" />
+<meta name="description" content="Computing Science graduate from SFU, AI concentration. Machine learning that ships, and the infrastructure around it." />
+
+<!--
+  Drag mechanic adapted from the Hyperplexed "image track" build,
+  itself inspired by camillemormal.com.
+
+  Swap images/*.svg for real files (keep the filenames, .png/.jpg both fine).
+-->
+
+<style>
+  :root {
+    --bg:     #000;
+    --panel:  #08090b;
+    --fg:     #fff;
+    --dim:    rgba(255,255,255,0.45);
+    --ghost:  rgba(255,255,255,0.22);
+    --faint:  rgba(255,255,255,0.08);
+    --line:   rgba(255,255,255,0.15);
+    --mono:   ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+    --sans:   "Geist", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+
+    /* section accents - one per About section, echoed in the map label */
+    --c1: #2dd4bf;   /* what i work on   */
+    --c2: #60a5fa;   /* working experience */
+    --c3: #a78bfa;   /* education        */
+    --c4: #fbbf24;   /* toolkit          */
+    --c5: #4ade80;   /* off the clock    */
+    --c6: #f472b6;   /* get in touch     */
+    --exp:    #60a5fa;
+    --proj:   #2dd4bf;
+    --warm:   #ffd9a0;
+    --slide:  900ms cubic-bezier(0.66, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+  }
+  body.is-pressing { cursor: grabbing; }
+  body.is-sliding  { cursor: default; }
+
+  /* ================= page stack ================= */
+  /* About sits ABOVE Work: pulling the light on brings it down. */
+
+  #stage {
+    position: fixed;
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: 200vh;
+    height: 200dvh;
+    transform: translateY(-100vh);
+    transform: translateY(-100dvh);
+    transition: transform var(--slide);
+    will-change: transform;
+  }
+  body.show-about #stage { transform: translateY(0); }
+
+  .page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ================= tracks ================= */
+
+  .track {
+    display: flex;
+    gap: 4vmin;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(0%, -50%);
+    user-select: none;
+  }
+
+  /* ---- work cards ---- */
+
+  .card {
+    position: relative;
+    flex: 0 0 auto;
+    width: 40vmin;
+    height: 60vmin;
+    overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--faint);
+  }
+  .card .image {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 100% center;
+  }
+  .card .scrim {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 2.4vmin 2.4vmin 2.6vmin;
+    padding-top: 10vmin;
+    background: linear-gradient(to top,
+      rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.80) 50%, rgba(0,0,0,0) 100%);
+  }
+  .card h2 {
+    margin: 0 0 1vmin;
+    font-size: clamp(15px, 2.5vmin, 27px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+  .card p {
+    margin: 0 0 1.4vmin;
+    font-size: clamp(10px, 1.4vmin, 14px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.72);
+  }
+
+  .eyebrow {
+    display: block;
+    font-family: var(--sans);
+    font-size: clamp(10px, 1.32vmin, 14px);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    margin-bottom: 1vmin;
+  }
+  [data-type="experience"] .eyebrow { color: var(--exp); }
+  [data-type="project"]    .eyebrow { color: var(--proj); }
+  [data-type="contact"]    .eyebrow { color: var(--dim); }
+
+  .stack {
+    display: block;
+    font-family: var(--mono);
+    font-size: clamp(8px, 1.02vmin, 10px);
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.38);
+    line-height: 1.6;
+  }
+
+  .links { display: flex; gap: 1.6vmin; margin-top: 1.4vmin; flex-wrap: wrap; }
+  .links a {
+    font-family: var(--mono);
+    font-size: clamp(8px, 1.02vmin, 10px);
+    letter-spacing: 0.14em;
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    transition: border-color 250ms;
+  }
+  .links a:hover { border-color: var(--fg); }
+  /* only set once a real drag is underway - see onMove */
+  body.is-dragging .links a { pointer-events: none; }
+
+  .card--contact {
+    display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(120% 90% at 50% 28%, rgba(45,212,191,0.10), transparent 68%),
+      var(--panel);
+  }
+  .contact-inner { padding: 3vmin; }
+  .contact-inner h2 {
+    margin: 0 0 1.4vmin;
+    font-size: clamp(18px, 3.2vmin, 34px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .contact-inner p {
+    margin: 0;
+    font-size: clamp(10px, 1.4vmin, 14px);
+    line-height: 1.55;
+    color: rgba(255,255,255,0.72);
+  }
+  .contact-inner .links { gap: 1.4vmin 2vmin; margin-top: 2.4vmin; }
+
+  /* ---- about: vertical editorial column + a true miniature of it ---- */
+
+  #page-about {
+    overflow-y: auto;
+    overflow-x: hidden;
+    touch-action: pan-y;
+    scrollbar-width: none;
+  }
+  #page-about::-webkit-scrollbar { width: 0; height: 0; }
+  body.show-about { cursor: default; }
+  body.is-panning, body.is-panning * { cursor: grabbing !important; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 2vw;
+    padding: 17vh 4vw 0;
+    align-items: start;
+  }
+
+  .about-side {
+    grid-column: 1 / 4;
+    position: sticky;
+    top: 12vh;
+  }
+
+  /* The miniature is NOT clipped to the outline. The whole scaled column
+     flows down the left, and the outline is a viewport frame floating over
+     it - transparent inside - marking the slice the big column is showing.
+     Content above and below the frame stays visible as context. */
+  .mini {
+    cursor: pointer;          /* click a section in the map to travel to it */
+    position: relative;
+    width: 100%;
+    max-width: 260px;      /* ONE KNOB: scale = this / main-column width */
+    height: 74vh;
+    overflow: hidden;
+  }
+  .mini-scroll {
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%, #000 10%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(to bottom,
+      transparent 0%, #000 10%, #000 90%, transparent 100%);
+  }
+  .mini-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    pointer-events: none;
+    opacity: 0.62;
+    will-change: transform;
+  }
+  .mini-hi {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.07);
+    opacity: 0;
+    transition: opacity 180ms ease;
+    pointer-events: none;
+  }
+  .mini-frame {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    background: none;      /* transparent inside - the outline is the whole point */
+    pointer-events: none;
+  }
+  .mini-label {
+    display: block;
+    margin-top: 18px;
+    font-family: var(--sans);
+    font-size: clamp(12px, 1.02vw, 18px);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.4);
+  }
+  .mini-label b { color: #fff; font-weight: 600; }
+  .mini-label #mini-name { transition: color 300ms ease; }
+
+  .about-main { grid-column: 6 / 13; }
+
+  .about-sec { margin-bottom: 24vh; }
+  .about-sec:last-child { margin-bottom: 18vh; }
+  .about-sec .eyebrow {
+    margin-bottom: 3vh;
+    font-size: clamp(13px, 1.3vw, 20px);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .about-sec p {
+    margin: 0 0 0.9em;
+    font-size: clamp(17px, 2.15vw, 34px);
+    line-height: 1.34;
+    letter-spacing: -0.015em;
+    color: rgba(255,255,255,0.92);
+  }
+  .about-sec p:last-of-type { margin-bottom: 0; }
+  .about-sec--lead p {
+    font-size: clamp(21px, 2.85vw, 46px);
+    line-height: 1.24;
+    letter-spacing: -0.025em;
+  }
+
+  /* big lists: experience, education */
+  .big-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5vh; }
+  .bl-role {
+    display: block;
+    font-size: clamp(16px, 1.95vw, 31px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .bl-org {
+    display: block;
+    margin-top: 0.35em;
+    font-size: clamp(12px, 1.35vw, 20px);
+    color: rgba(255,255,255,0.62);
+  }
+  .bl-date {
+    display: block;
+    margin-top: 0.5em;
+    font-family: var(--mono);
+    font-size: clamp(9px, 0.82vw, 12px);
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.38);
+  }
+  .bl-note {
+    display: block;
+    margin-top: 0.8em;
+    font-size: clamp(12px, 1.25vw, 18px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* toolkit rows */
+  .tk { display: grid; gap: 3.4vh; }
+  .tk-label {
+    display: block;
+    font-family: var(--mono);
+    font-size: clamp(9px, 0.82vw, 12px);
+    letter-spacing: 0.16em;
+    color: var(--dim);
+    margin-bottom: 0.55em;
+  }
+  .tk-val {
+    display: block;
+    font-size: clamp(13px, 1.45vw, 22px);
+    line-height: 1.45;
+    color: rgba(255,255,255,0.82);
+  }
+
+  /* contact */
+  .end-links { display: flex; flex-wrap: wrap; gap: 1.2em 2.2em; margin-top: 4vh; }
+  .end-links a {
+    font-size: clamp(14px, 1.6vw, 26px);
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 5px;
+    transition: border-color 250ms;
+  }
+  .end-links a:hover { border-color: #fff; }
+
+  /* progressive enhancement: only hide sections once JS is driving them */
+  .about-main.js-reveal .about-sec {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 900ms cubic-bezier(0.2, 0.7, 0.2, 1),
+                transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .about-main.js-reveal .about-sec.in { opacity: 1; transform: none; }
+  /* the clone must never be hidden - it mirrors, it doesn't animate */
+  .mini-inner .about-sec { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-main.js-reveal .about-sec { opacity: 1; transform: none; transition: none; }
+  }
+
+  .hobbies { display: flex; gap: 1.6vw; margin-top: 5vh; max-width: 40vw; }
+  .hobby { flex: 1 1 0; min-width: 0; }
+  .hobby img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border: 1px solid var(--faint);
+    background: #0a0b0d;
+  }
+  .hobby span {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--dim);
+  }
+
+  /* ================= HUD ================= */
+
+  .hud {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 34vmin);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .counter {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1.05vw, 18px);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .counter .cur { color: var(--fg); font-weight: 600; }
+
+  .progress { position: relative; width: 140px; height: 1px; background: var(--line); }
+  .progress .fill { position: absolute; inset: 0 auto 0 0; width: 0%; background: var(--fg); }
+
+  .hint {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--dim);
+    animation: breathe 2.4s ease-in-out infinite;
+    transition: opacity 700ms ease;
+  }
+  .page.has-dragged .hint { opacity: 0; animation: none; }
+  @keyframes breathe { 0%,100% { opacity: 0.3; } 50% { opacity: 0.9; } }
+
+  /* ============ standing info (fades once you travel) ============ */
+
+  #ident {
+    position: absolute;
+    left: 6vmin;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15;
+    max-width: 32vmin;
+    transition: opacity 500ms ease;
+    pointer-events: none;
+  }
+  #ident h1 {
+    margin: 0 0 2vmin;
+    font-size: clamp(26px, 4.6vmin, 52px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  #ident .ident-lede {
+    margin: 0 0 2.4vmin;
+    font-size: clamp(11px, 1.66vmin, 16px);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.68);
+  }
+  #ident .eyebrow { color: var(--dim); margin: 0; }
+  body.work-travelled #ident { opacity: 0; }
+
+  /* ================= lightbulb nav ================= */
+
+  #lamp {
+    position: fixed;
+    top: 0;
+    right: 5vmin;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+  #lamp:focus-visible { outline: 1px solid var(--line); outline-offset: 6px; }
+  #lamp::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -20px;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 300px;
+    background: radial-gradient(50% 50% at 50% 45%,
+      rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0) 72%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  #lamp .cord,
+  #lamp .chain-arm { stroke: rgba(255,255,255,0.26); stroke-width: 1.6; }
+  #lamp .base      { fill: none; stroke: rgba(255,255,255,0.34); stroke-width: 1.6; }
+  #lamp .bulb      { fill: rgba(255,255,255,0.02); stroke: rgba(255,255,255,0.36);
+                     stroke-width: 1.6; transition: stroke 400ms, fill 400ms; }
+  #lamp .filament  { fill: none; stroke: rgba(255,255,255,0.36); stroke-width: 1.6;
+                     stroke-linecap: round; stroke-linejoin: round; transition: stroke 400ms; }
+  #lamp .glow      { opacity: 0; transition: opacity 500ms ease; }
+
+  /* the short beaded chain - the thing you actually yank */
+  #lamp .chain-line {
+    stroke: rgba(255,255,255,0.42);
+    stroke-width: 1.7;
+    stroke-dasharray: 2 3.4;      /* reads as beads, not a wire */
+    stroke-linecap: round;
+  }
+  #lamp .chain-bead {
+    fill: rgba(255,255,255,0.5);
+    transition: fill 250ms;
+  }
+  #lamp .chain { transition: transform 260ms cubic-bezier(0.3, 1.3, 0.5, 1); }
+  #lamp:hover .chain { transform: translateY(5px); }      /* hint that it pulls */
+  #lamp:hover .chain-bead { fill: #fff; }
+
+  body.show-about #lamp .bulb     { stroke: var(--warm); fill: rgba(255,200,120,0.10); }
+  body.show-about #lamp .filament { stroke: var(--warm); }
+  body.show-about #lamp .glow     { opacity: 1; }
+
+  #lamp .lamp-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 200ms;
+  }
+  #lamp.swapping .lamp-label { opacity: 0; }
+  .lamp-hint {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+  }
+  .lamp-dest {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1.05vw, 17px);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.78);
+    transition: color 300ms;
+  }
+  #lamp:hover .lamp-dest { color: #fff; }
+
+  /* the yank: chain snaps down, bulb bobs a beat later */
+  #lamp.pulled .chain    { animation: yank 620ms cubic-bezier(0.3, 1.4, 0.5, 1); }
+  #lamp.pulled .lamp-svg { animation: bob 700ms cubic-bezier(0.3, 1.5, 0.5, 1); }
+
+  @keyframes yank {
+    0%   { transform: translateY(0); }
+    30%  { transform: translateY(13px); }
+    65%  { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+  }
+  @keyframes bob {
+    0%   { transform: translateY(0); }
+    28%  { transform: translateY(8px); }
+    100% { transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root { --slide: 1ms; }
+    .hint { animation: none; opacity: 0.6; }
+    #lamp.pulled .lamp-svg { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <!-- ==================== ABOUT (above) ==================== -->
+  <section class="page" id="page-about" aria-label="About">
+    <div class="about-grid">
+
+      <aside class="about-side">
+        <!-- filled by JS with a scaled clone of .about-main -->
+        <div class="mini" id="mini" title="Click a section to jump to it">
+          <div class="mini-scroll" aria-hidden="true"><div class="mini-inner" id="mini-inner"></div></div>
+          <div class="mini-hi" id="mini-hi" aria-hidden="true"></div>
+          <div class="mini-frame" id="mini-frame" aria-hidden="true"></div>
+        </div>
+        <span class="mini-label"><b id="mini-idx">01</b> / <span id="mini-total">07</span> &nbsp;&middot;&nbsp; <span id="mini-name">HELLO</span></span>
+      </aside>
+
+      <main class="about-main" id="about-main">
+
+        <section class="about-sec about-sec--lead" data-title="Hello" data-accent="#ffffff">
+          <p>I&rsquo;m Hieu &mdash; a Computing Science graduate from Simon Fraser University, concentration in Artificial Intelligence, based in Vancouver.</p>
+          <p>I like the problems where the interesting part is getting something to actually work in production. Not just in a notebook.</p>
+        </section>
+
+        <section class="about-sec" data-title="What I work on" data-accent="#2dd4bf">
+          <span class="eyebrow" style="color:var(--c1)">WHAT I WORK ON</span>
+          <p>Machine learning that ships, and the infrastructure around it. On DermoAI I trained a melanoma classifier &mdash; then spent about as long again on the deployment: Docker, Cloud Run, and a pipeline that refuses to release a model failing its checks.</p>
+          <p>The bug I&rsquo;m proudest of catching was a silent preprocessing defect. It passed every unit test and loaded weights cleanly, and still dropped production AUROC from 0.76 to 0.56. I built a harness that replays the full test set through the serving path, so it can&rsquo;t happen quietly again.</p>
+        </section>
+
+        <section class="about-sec" data-title="Working Experience" data-accent="#60a5fa">
+          <span class="eyebrow" style="color:var(--c2)">WORKING EXPERIENCE</span>
+          <ul class="big-list">
+            <li>
+              <span class="bl-role">Software Engineer Intern</span>
+              <span class="bl-org">VietinBank &mdash; Da Nang, Vietnam</span>
+              <span class="bl-date">MAY &mdash; SEP 2024</span>
+              <span class="bl-note">React interfaces for four core banking modules, and 25+ Spring Boot REST endpoints defined with the backend team. Restructuring the query and response payloads cut data processing time 30%.</span>
+            </li>
+            <li>
+              <span class="bl-role">IT Support Technician</span>
+              <span class="bl-org">Fraser International College &mdash; Burnaby, BC</span>
+              <span class="bl-date">SEP 2022 &mdash; MAY 2023</span>
+              <span class="bl-note">50+ issues a semester across hardware, networking, Moodle and account systems. Documenting recurring incidents cut classroom downtime and repeat tickets.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="about-sec" data-title="Education" data-accent="#a78bfa">
+          <span class="eyebrow" style="color:var(--c3)">EDUCATION</span>
+          <ul class="big-list">
+            <li>
+              <span class="bl-role">BSc Computing Science</span>
+              <span class="bl-org">Simon Fraser University &mdash; Burnaby, BC</span>
+              <span class="bl-date">GRADUATED JUNE 2026 &nbsp;&middot;&nbsp; CONCENTRATION IN ARTIFICIAL INTELLIGENCE</span>
+              <span class="bl-note">Data Structures &amp; Algorithms &middot; Database Systems &middot; Systems Programming &middot; Computer Systems &middot; Software Engineering &middot; Artificial Intelligence &middot; Intelligent Systems &middot; Mobile Application Programming &middot; Cryptography &amp; Protocols</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="about-sec" data-title="Toolkit" data-accent="#fbbf24">
+          <span class="eyebrow" style="color:var(--c4)">TOOLKIT</span>
+          <div class="tk">
+            <div>
+              <span class="tk-label">LANGUAGES</span>
+              <span class="tk-val">Python &middot; Java &middot; JavaScript &middot; Kotlin &middot; C/C++ &middot; SQL &middot; Rust &middot; HTML/CSS</span>
+            </div>
+            <div>
+              <span class="tk-label">FRAMEWORKS &amp; LIBRARIES</span>
+              <span class="tk-val">React &middot; Node &middot; Spring Boot &middot; REST &middot; PyTorch &middot; Pandas &middot; NumPy &middot; scikit-learn &middot; Android SDK &middot; Room</span>
+            </div>
+            <div>
+              <span class="tk-label">PLATFORM &amp; TOOLS</span>
+              <span class="tk-val">Docker &middot; GCP Cloud Run &middot; GitHub Actions &middot; PostgreSQL &middot; SQLite &middot; Git &middot; Linux &middot; Postman</span>
+            </div>
+            <div>
+              <span class="tk-label">PRACTICE</span>
+              <span class="tk-val">Full-stack development &middot; Machine learning &middot; Computer vision &middot; MVVM &middot; Agile &middot; Unit testing &middot; Code review</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-sec" data-title="Outside work" data-accent="#4ade80">
+          <span class="eyebrow" style="color:var(--c5)">OFF THE CLOCK</span>
+          <p>Badminton most weeks, hiking whenever the North Shore cooperates, and an ongoing and expensive interest in eating well around Vancouver.</p>
+          <div class="hobbies">
+            <div class="hobby"><img src="images/hobby-badminton.svg" draggable="false" alt="" /><span>BADMINTON</span></div>
+            <div class="hobby"><img src="images/hobby-hiking.svg" draggable="false" alt="" /><span>HIKING</span></div>
+            <div class="hobby"><img src="images/hobby-food.svg" draggable="false" alt="" /><span>FOOD</span></div>
+          </div>
+        </section>
+
+        <section class="about-sec about-sec--end" data-title="Get in touch" data-accent="#f472b6">
+          <span class="eyebrow" style="color:var(--c6)">GET IN TOUCH</span>
+          <p>Open to new-grad software roles in Vancouver or remote. If something here looks like your team&rsquo;s problem, I&rsquo;d like to hear about it.</p>
+          <div class="end-links">
+            <a href="mailto:hughtran.cs@gmail.com">hughtran.cs@gmail.com</a>
+            <a href="https://linkedin.com/in/hcht1811" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://github.com/Hieu181101" target="_blank" rel="noopener">GitHub</a>
+            <a href="HieuTran-Resume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute;</a>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </section>
+
+  <!-- ==================== WORK (below) ==================== -->
+  <section class="page" id="page-work" aria-label="Work">
+
+    <div class="track" id="work-track" data-mouse-down-at="0" data-prev-percentage="0" data-percentage="0">
+
+      <article class="card" data-type="project">
+        <img class="image" src="images/dermoai.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">PROJECT &middot; SEP 2025 &mdash; AUG 2026</span>
+          <h2>DermoAI</h2>
+          <p>A PyTorch melanoma classifier deployed as a live public service &mdash; FastAPI inference, React front end, Dockerized on Cloud Run with CI/CD that blocks failing releases.</p>
+          <span class="stack">Python &middot; FastAPI &middot; PyTorch &middot; Docker &middot; GCP Cloud Run &middot; GitHub Actions</span>
+          <div class="links">
+            <a href="https://github.com/Hieu181101/DermoAI" target="_blank" rel="noopener">CODE</a>
+            <a href="https://dermoai-1011516187199.us-west1.run.app/" target="_blank" rel="noopener">LIVE DEMO</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-type="experience">
+        <img class="image" src="images/vietinbank.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">EXPERIENCE &middot; MAY &mdash; SEP 2024</span>
+          <h2>VietinBank</h2>
+          <p>Software Engineer Intern. Built React interfaces for four core banking modules and 25+ Spring Boot REST endpoints, cutting data processing time 30%.</p>
+          <span class="stack">React.js &middot; JavaScript &middot; Java &middot; Spring Boot &middot; REST &middot; Agile</span>
+        </div>
+      </article>
+
+      <article class="card" data-type="project">
+        <img class="image" src="images/mapf.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">PROJECT &middot; SEP &mdash; DEC 2025</span>
+          <h2>CBS + SIPP Solver</h2>
+          <p>An optimal multi-agent path finding solver integrating Safe Interval Path Planning into Conflict-Based Search, with a simulation and benchmarking harness.</p>
+          <span class="stack">Python &middot; A* &middot; Conflict-Based Search &middot; SIPP &middot; Algorithms</span>
+          <div class="links">
+            <a href="https://github.com/Hieu181101/CBS-SIPP-Multi-Agent-Path-Finding-Solver" target="_blank" rel="noopener">CODE</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-type="project">
+        <img class="image" src="images/maza.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">PROJECT &middot; 2025</span>
+          <h2>MAZA Visualizer</h2>
+          <p>A React pathfinding visualizer that animates how different search algorithms explore a grid and converge on a route.</p>
+          <span class="stack">React &middot; JavaScript &middot; Algorithms &middot; Visualization</span>
+          <div class="links">
+            <a href="https://github.com/Hieu181101/MAZA-visulization" target="_blank" rel="noopener">CODE</a>
+            <a href="https://maza-visulization.vercel.app/" target="_blank" rel="noopener">LIVE DEMO</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-type="project">
+        <img class="image" src="images/brokenomore.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">PROJECT &middot; OCT &mdash; DEC 2024</span>
+          <h2>Broke No More</h2>
+          <p>A Kotlin/Android expense tracker with OCR receipt parsing over a Room persistence layer, live crypto charting, and an AI financial assistant.</p>
+          <span class="stack">Kotlin &middot; Android SDK &middot; MVVM &middot; Room &middot; OCR &middot; REST APIs</span>
+          <div class="links">
+            <a href="https://github.com/andyr3n/Broke-No-More" target="_blank" rel="noopener">CODE</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-type="project">
+        <img class="image" src="images/hive.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">PROJECT &middot; 2025</span>
+          <h2>HIVE</h2>
+          <p>The HIVE board game implemented in Java &mdash; hex-tile board state, move generation and turn logic.</p>
+          <span class="stack">Java &middot; Game Logic &middot; OOP</span>
+          <div class="links">
+            <a href="https://github.com/Hieu181101/HIVE-game" target="_blank" rel="noopener">CODE</a>
+            <!-- live demo hive-game.vercel.app 404s - redeploy, then add it back here -->
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-type="experience">
+        <img class="image" src="images/fic.svg" draggable="false" alt="" />
+        <div class="scrim">
+          <span class="eyebrow">EXPERIENCE &middot; SEP 2022 &mdash; MAY 2023</span>
+          <h2>Fraser International College</h2>
+          <p>IT Support Technician. 50+ issues a semester across hardware, networking and Moodle, with incident documentation that cut classroom downtime and repeat tickets.</p>
+          <span class="stack">Hardware &middot; Networking &middot; Moodle &middot; Support &middot; Documentation</span>
+        </div>
+      </article>
+
+      <article class="card card--contact" data-type="contact">
+        <div class="contact-inner">
+          <span class="eyebrow">END OF THE LINE</span>
+          <h2>Let&rsquo;s talk</h2>
+          <p>Computing Science grad from SFU (June 2026), AI concentration. Looking for new-grad software roles &mdash; Vancouver or remote.</p>
+          <div class="links">
+            <a href="mailto:hughtran.cs@gmail.com">EMAIL</a>
+            <a href="https://linkedin.com/in/hcht1811" target="_blank" rel="noopener">LINKEDIN</a>
+            <a href="https://github.com/Hieu181101" target="_blank" rel="noopener">GITHUB</a>
+            <a href="HieuTran-Resume.pdf" target="_blank" rel="noopener">R&Eacute;SUM&Eacute;</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div id="ident">
+      <h1>Hieu Tran</h1>
+      <p class="ident-lede">Machine learning that ships &mdash; and the infrastructure around it.</p>
+      <span class="eyebrow">SFU COMPUTING SCIENCE &middot; VANCOUVER, BC</span>
+    </div>
+
+    <div class="hud" id="work-hud">
+      <div class="counter"><span class="cur">01</span> / <span class="total">08</span></div>
+      <div class="progress"><div class="fill"></div></div>
+      <div class="hint"><span>&#8592;</span><span>DRAG</span><span>&#8594;</span></div>
+    </div>
+
+  </section>
+</div>
+
+<!-- ==================== lightbulb pull-chain nav ==================== -->
+<button id="lamp" type="button" aria-label="Pull the chain to go to About">
+  <svg class="lamp-svg" viewBox="0 0 110 212" width="92" height="177" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="lampglow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#ffd9a0" stop-opacity="0.55"/>
+        <stop offset="45%"  stop-color="#ffc978" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#ffc978" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- the long cord the fixture hangs from -->
+    <line class="cord" x1="45" y1="0" x2="45" y2="70" />
+    <rect class="base" x="36" y="70" width="18" height="15" rx="2" />
+
+    <circle class="glow" cx="45" cy="118" r="48" fill="url(#lampglow)" />
+    <circle class="bulb" cx="45" cy="118" r="26" />
+    <path class="filament" d="M34 123 l7 -12 l7 12 l7 -12" />
+
+    <!-- the short chain: arm is fixed, only the beaded part travels -->
+    <line class="chain-arm" x1="54" y1="79" x2="79" y2="79" />
+    <g class="chain">
+      <line class="chain-line" x1="79" y1="70" x2="79" y2="150" />
+      <circle class="chain-bead" cx="79" cy="157" r="5" />
+    </g>
+  </svg>
+  <span class="lamp-label">
+    <b class="lamp-hint">PULL FOR</b>
+    <b class="lamp-dest">ABOUT</b>
+  </span>
+</button>
+
+<script>
+(function () {
+  "use strict";
+
+  var DUR = 1200;               // matches the track's glide
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ============ one draggable track ============ */
+
+  function Track(el, hud, onPaint) {
+    this.el      = el;
+    this.page    = el.closest(".page");
+    this.items   = Array.prototype.slice.call(el.children);
+    this.media   = Array.prototype.slice.call(el.querySelectorAll("img"));
+    this.total   = this.items.length;
+    this.onPaint = onPaint || null;
+    this.index   = 0;
+
+    this.curEl  = hud ? hud.querySelector(".cur")   : null;
+    this.totEl  = hud ? hud.querySelector(".total") : null;
+    this.fillEl = hud ? hud.querySelector(".fill")  : null;
+
+    if (this.totEl) this.totEl.textContent = pad(this.total);
+
+    this.onFrame = null;
+    this.raf = null;
+    this.settle = null;
+  }
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  Track.prototype.metrics = function () {
+    var itemW = this.items[0].offsetWidth;
+    var gap   = parseFloat(getComputedStyle(this.el).columnGap) || 0;
+    return { itemW: itemW, gap: gap, trackW: this.el.offsetWidth };
+  };
+
+  /* read the real on-screen position, not the target: the 1200ms glide
+     means a target-driven readout runs ahead of what the eye sees */
+  Track.prototype.paint = function () {
+    var m  = this.metrics();
+    var tx = this.el.getBoundingClientRect().left - window.innerWidth / 2;
+
+    var raw  = (-tx - m.itemW / 2) / (m.itemW + m.gap);
+    var idx  = Math.min(Math.max(Math.round(raw), 0), this.total - 1);
+    var prog = Math.min(Math.max(-tx / m.trackW, 0), 1);
+
+    if (this.curEl)  this.curEl.textContent = pad(idx + 1);
+    if (this.fillEl) this.fillEl.style.width = (prog * 100) + "%";
+    if (this.onFrame) this.onFrame(prog);
+
+    if (idx !== this.index) {
+      this.index = idx;
+      if (this.onPaint) this.onPaint(idx);
+    }
+  };
+
+  Track.prototype.loop = function () {
+    var self = this;
+    if (this.raf) return;
+    (function tick() { self.paint(); self.raf = requestAnimationFrame(tick); })();
+  };
+
+  Track.prototype.stopSoon = function () {
+    var self = this;
+    clearTimeout(this.settle);
+    this.settle = setTimeout(function () {
+      cancelAnimationFrame(self.raf);
+      self.raf = null;
+      self.paint();
+    }, DUR + 200);
+  };
+
+  Track.prototype.apply = function (pct) {
+    var opts = { duration: reduce ? 1 : DUR, fill: "forwards" };
+    this.el.animate({ transform: "translate(" + pct + "%, -50%)" }, opts);
+    for (var i = 0; i < this.media.length; i++) {
+      this.media[i].animate({ objectPosition: (100 + pct) + "% center" }, opts);
+    }
+  };
+
+  Track.prototype.down = function (x) {
+    this.el.dataset.mouseDownAt = x;
+    this.loop();
+  };
+
+  Track.prototype.up = function () {
+    this.el.dataset.mouseDownAt = "0";
+    // guard: the original tutorial stored "undefined" here when you clicked
+    // without dragging, which turned every later drag into NaN and froze it
+    this.el.dataset.prevPercentage = this.el.dataset.percentage || "0";
+    this.stopSoon();
+  };
+
+  Track.prototype.move = function (x) {
+    if (this.el.dataset.mouseDownAt === "0") return;
+
+    var delta = parseFloat(this.el.dataset.mouseDownAt) - x;
+    var max   = window.innerWidth / 2;
+    var pct   = (delta / max) * -100;
+    var next  = parseFloat(this.el.dataset.prevPercentage) + pct;
+    next = Math.max(Math.min(next, 0), -100);
+
+    this.el.dataset.percentage = next;
+    this.apply(next);
+  };
+
+  Track.prototype.goToIndex = function (i) {
+    i = Math.min(Math.max(i, 0), this.total - 1);
+    var m  = this.metrics();
+    var tx = -(i * (m.itemW + m.gap) + m.itemW / 2);
+    var pct = Math.max(Math.min(tx / m.trackW * 100, 0), -100);
+
+    this.el.dataset.percentage = pct;
+    this.el.dataset.prevPercentage = pct;
+    this.apply(pct);
+    this.loop();
+    this.stopSoon();
+  };
+
+  /* ============ build the two tracks ============ */
+
+  var body = document.body;
+
+  var work = new Track(
+    document.getElementById("work-track"),
+    document.getElementById("work-hud")
+  );
+
+  /* ============ about: the mini is a literal clone of the big column ============ */
+
+  var aboutPage = document.getElementById("page-about");
+  var main      = document.getElementById("about-main");
+  var mini      = document.getElementById("mini");
+  var miniInner = document.getElementById("mini-inner");
+  var miniIdx   = document.getElementById("mini-idx");
+  var miniName  = document.getElementById("mini-name");
+  var secs      = Array.prototype.slice.call(main.querySelectorAll(".about-sec"));
+  var miniFrame = document.getElementById("mini-frame");
+  var miniHi = document.getElementById("mini-hi");
+  var miniScale = 0, frameH = 0, frameTop = 0, lastCloneY = 0, hoverSec = -1;
+  var activeSec = -1;
+
+  document.getElementById("mini-total").textContent = pad(secs.length);
+
+  /* Clone BEFORE the reveal class goes on, so the copy is never mid-animation.
+     Ids are stripped so the document keeps exactly one of each. */
+  (function buildClone() {
+    var copy = main.cloneNode(true);
+    copy.removeAttribute("id");
+    var withIds = copy.querySelectorAll("[id]");
+    for (var i = 0; i < withIds.length; i++) withIds[i].removeAttribute("id");
+    copy.setAttribute("aria-hidden", "true");
+    // Strip interactivity from the copy. It is decorative, but its anchors
+    // were still real links: keyboard Tab walked through seven phantom
+    // copies of the contact links hidden inside the miniature.
+    var links = copy.querySelectorAll("a");
+    for (var j = 0; j < links.length; j++) {
+      links[j].removeAttribute("href");
+      links[j].setAttribute("tabindex", "-1");
+    }
+    miniInner.appendChild(copy);
+  })();
+
+  /* The window is one viewport tall AT THE MINI'S SCALE, so it frames exactly
+     what the big column is showing - same content, same proportions. */
+  function layoutMini() {
+    var mainW = main.offsetWidth;
+    var miniW = mini.clientWidth;
+    if (!mainW || !miniW) return;
+    miniScale = miniW / mainW;
+    miniInner.style.width = mainW + "px";
+
+    // the frame is one viewport tall at this scale, parked mid-column so
+    // there is context visible both before and after the current slice
+    frameH = Math.round(aboutPage.clientHeight * miniScale);
+    frameTop = Math.round((mini.clientHeight - frameH) / 2);
+    miniFrame.style.top = frameTop + "px";
+    miniFrame.style.height = frameH + "px";
+  }
+
+  function syncMini() {
+    if (!miniScale) return;
+    // frameTop parks the current slice inside the frame; the main.offsetTop
+    // term cancels the grid's top padding so the two views never drift
+    lastCloneY = frameTop + (main.offsetTop - aboutPage.scrollTop) * miniScale;
+    miniInner.style.transform = "translate3d(0," + lastCloneY + "px,0) scale(" + miniScale + ")";
+    if (hoverSec >= 0) placeHighlight(hoverSec);
+  }
+
+  function updateMini() {
+    syncMini();
+
+    var pageTop = aboutPage.getBoundingClientRect().top;
+    var line = aboutPage.clientHeight * 0.4;
+    var best = 0;
+    var bestD = Infinity;
+    for (var i = 0; i < secs.length; i++) {
+      var r = secs[i].getBoundingClientRect();
+      var top = r.top - pageTop;
+      if (top <= line && top + r.height >= line) { best = i; break; }
+      var d = Math.abs(top - line);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    if (best !== activeSec) {
+      activeSec = best;
+      miniIdx.textContent = pad(best + 1);
+      miniName.textContent = (secs[best].getAttribute("data-title") || "").toUpperCase();
+      miniName.style.color = secs[best].getAttribute("data-accent") || "#fff";
+    }
+  }
+
+  /* ---- lerped scrolling ----
+     A wheel notch is a discrete jump; a trackpad sends a stream of small ones.
+     So we keep a target and ease the real scrollTop toward it each frame, and
+     use a longer time constant for the wheel so it lands as softly as the pad.
+     The easing is time-based, so 144Hz glides at the same speed as 60Hz. */
+
+  /* Tuning. TAU is the easing time constant in ms - higher is a longer,
+     softer glide. WHEEL_GAIN shrinks a wheel notch (~100px raw) so one click
+     nudges instead of jumping a whole block. */
+  var TAU_WHEEL = 260, TAU_PAD = 90, TAU_JUMP = 190, TAU_DRAG = 150;
+  var TAU_REDUCED = 60;        // still eased, just short - never the stepped native scroll
+  var WHEEL_GAIN = 0.45;       // a notch is ~100px raw; this is the nudge size
+  var WHEEL_MAX  = 110;        // hard cap per event, whatever the OS reports
+  var DRAG_GAIN  = 1.25;       // content follows the hand, like the Work track
+  var TAU = TAU_WHEEL;
+  var targetY = 0, currentY = 0, smoothRaf = null, lastT = 0;
+
+  function maxScroll() { return aboutPage.scrollHeight - aboutPage.clientHeight; }
+  function syncScroll() { currentY = targetY = aboutPage.scrollTop; }
+
+  function stepScroll(now) {
+    var dt = Math.min(now - lastT, 60);
+    lastT = now;
+
+    var diff = targetY - currentY;
+    if (Math.abs(diff) < 0.35) {
+      currentY = targetY;
+      aboutPage.scrollTop = currentY;
+      smoothRaf = null;
+      updateMini();
+      return;
+    }
+    currentY += diff * (1 - Math.exp(-dt / TAU));
+    aboutPage.scrollTop = currentY;
+    updateMini();
+    smoothRaf = requestAnimationFrame(stepScroll);
+  }
+
+  function glideTo(y) {
+    targetY = Math.max(0, Math.min(y, maxScroll()));
+    if (smoothRaf) return;
+    lastT = performance.now();
+    smoothRaf = requestAnimationFrame(stepScroll);
+  }
+
+  aboutPage.addEventListener("wheel", function (e) {
+    // NOTE: this used to bail out under prefers-reduced-motion, which handed
+    // scrolling back to the OS - and native wheel scrolling IS the stepped
+    // jump we are trying to avoid. Reduced motion now just shortens the ease.
+    e.preventDefault();
+
+    var d = e.deltaY;
+    if (e.deltaMode === 1) d *= 16;                        // lines
+    else if (e.deltaMode === 2) d *= aboutPage.clientHeight * 0.5;  // "one screen at a time"
+
+    // big discrete deltas mean a wheel; a stream of small ones means a trackpad
+    var isWheel = (e.deltaMode !== 0 || Math.abs(e.deltaY) >= 50);
+    if (isWheel) d *= WHEEL_GAIN;
+
+    // Hard cap per event. Mice set to page-scroll, and some drivers, report
+    // enormous deltas - without this a single notch clears a whole section.
+    if (d >  WHEEL_MAX) d =  WHEEL_MAX;
+    if (d < -WHEEL_MAX) d = -WHEEL_MAX;
+
+    TAU = reduce ? TAU_REDUCED : (isWheel ? TAU_WHEEL : TAU_PAD);
+    glideTo(targetY + d);
+  }, { passive: false });
+
+  aboutPage.addEventListener("touchstart", function () {
+    if (smoothRaf) { cancelAnimationFrame(smoothRaf); smoothRaf = null; }
+    syncScroll();
+  }, { passive: true });
+
+  var miniTick = false;
+  aboutPage.addEventListener("scroll", function () {
+    if (!smoothRaf) syncScroll();
+    if (miniTick) return;
+    miniTick = true;
+    requestAnimationFrame(function () { miniTick = false; updateMini(); });
+  });
+
+  /* ---- sections ease in as they arrive (the clone never does) ---- */
+
+  if ("IntersectionObserver" in window) {
+    main.classList.add("js-reveal");
+    var revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("in"); revealIO.unobserve(en.target); }
+      });
+    }, { root: aboutPage, threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    secs.forEach(function (s) { revealIO.observe(s); });
+    if (secs[0]) secs[0].classList.add("in");
+  }
+
+  /* ---- the map is clickable: hover to preview a section, click to travel ---- */
+
+  function placeHighlight(i) {
+    if (!miniScale || !secs[i]) return;
+    miniHi.style.top = (lastCloneY + (secs[i].offsetTop - main.offsetTop) * miniScale) + "px";
+    miniHi.style.height = (secs[i].offsetHeight * miniScale) + "px";
+  }
+
+  // invert the clone's transform: where in the document is this pixel?
+  function miniDocY(clientY) {
+    var r = mini.getBoundingClientRect();
+    return main.offsetTop + ((clientY - r.top) - lastCloneY) / miniScale;
+  }
+
+  function sectionAt(docY) {
+    var best = 0;
+    for (var i = 0; i < secs.length; i++) if (docY >= secs[i].offsetTop) best = i;
+    return best;
+  }
+
+  mini.addEventListener("mousemove", function (e) {
+    if (!miniScale) return;
+    var i = sectionAt(miniDocY(e.clientY));
+    if (i !== hoverSec) { hoverSec = i; placeHighlight(i); }
+    miniHi.style.opacity = "1";
+  });
+
+  mini.addEventListener("mouseleave", function () {
+    hoverSec = -1;
+    miniHi.style.opacity = "0";
+  });
+
+  mini.addEventListener("click", function (e) {
+    if (!miniScale) return;
+    var i = sectionAt(miniDocY(e.clientY));
+    TAU = TAU_JUMP;                       // quick, still eased - never a cut
+    glideTo(secs[i].offsetTop - aboutPage.clientHeight * 0.16);
+  });
+
+  /* ---- hold the middle or right button and pull, like the Work track ----
+     Content follows the hand 1:1 (times DRAG_GAIN) rather than scrolling at a
+     speed set by distance - same mental model as dragging cards on Work.
+     Left button is deliberately left alone so text stays selectable. */
+
+  var drag = null, suppressMenu = false;
+
+  aboutPage.addEventListener("mousedown", function (e) {
+    if (!showingAbout || (e.button !== 1 && e.button !== 2)) return;
+    e.preventDefault();                   // also kills the OS autoscroll widget
+    drag = { y: e.clientY, from: targetY, moved: false, button: e.button };
+    TAU = reduce ? TAU_REDUCED : TAU_DRAG;
+    document.body.classList.add("is-panning");
+  });
+
+  window.addEventListener("mousemove", function (e) {
+    if (!drag) return;
+    var dy = e.clientY - drag.y;
+    if (Math.abs(dy) > 3) drag.moved = true;
+    glideTo(drag.from - dy * DRAG_GAIN);
+  });
+
+  window.addEventListener("mouseup", function (e) {
+    if (!drag || e.button !== drag.button) return;
+    suppressMenu = drag.moved && drag.button === 2;
+    drag = null;
+    document.body.classList.remove("is-panning");
+  });
+
+  aboutPage.addEventListener("contextmenu", function (e) {
+    // a plain right-click still opens the menu; only a right-DRAG is swallowed
+    if (suppressMenu) { e.preventDefault(); suppressMenu = false; }
+  });
+
+  layoutMini();
+  updateMini();
+
+  work.onFrame = function (prog) {
+    body.classList.toggle("work-travelled", prog > 0.012);
+  };
+
+  /* ============ page switching ============ */
+
+  var lamp      = document.getElementById("lamp");
+  var lampLabel = lamp.querySelector(".lamp-dest");
+  var showingAbout = false;
+  var sliding = false;
+
+  function toggle() {
+    if (sliding) return;
+    sliding = true;
+    showingAbout = !showingAbout;
+
+    body.classList.toggle("show-about", showingAbout);
+    body.classList.add("is-sliding");
+
+    lamp.classList.add("pulled", "swapping");
+    setTimeout(function () {
+      // the label says where the pull takes you, not where you already are
+      var dest = showingAbout ? "WORK" : "ABOUT";
+      lampLabel.textContent = dest;
+      lamp.setAttribute("aria-label", "Pull the chain to go to " + dest);
+      lamp.classList.remove("swapping");
+    }, reduce ? 0 : 220);
+
+    setTimeout(function () {
+      lamp.classList.remove("pulled");
+      body.classList.remove("is-sliding");
+      sliding = false;
+      work.paint();
+      if (showingAbout) { syncScroll(); layoutMini(); updateMini(); }
+    }, reduce ? 20 : 900);
+  }
+
+  lamp.addEventListener("click", toggle);
+
+  /* ============ input ============ */
+
+  var downX = 0, moved = 0, pressing = false;
+
+  function onDown(x) {
+    if (sliding || showingAbout) return;
+    downX = x; moved = 0; pressing = true;
+    body.classList.add("is-pressing");
+    work.down(x);
+  }
+  function onMove(x) {
+    if (!pressing || sliding || showingAbout) return;
+    moved = Math.max(moved, Math.abs(x - downX));
+    if (moved > 3 && work.page) work.page.classList.add("has-dragged");
+    // Disable the card links only once this is genuinely a drag. Doing it on
+    // mousedown meant the anchor lost pointer-events before mouseup, so the
+    // browser never fired a click on it and CODE / LIVE DEMO did nothing.
+    if (moved > 6) body.classList.add("is-dragging");
+    work.move(x);
+  }
+  function onUp() {
+    pressing = false;
+    body.classList.remove("is-pressing", "is-dragging");
+    if (showingAbout) return;
+    work.up();
+  }
+
+  window.addEventListener("mousedown",  function (e) { if (e.button !== 0) return; onDown(e.clientX); });
+  window.addEventListener("mousemove",  function (e) { onMove(e.clientX); });
+  window.addEventListener("mouseup",    onUp);
+  window.addEventListener("touchstart", function (e) { onDown(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener("touchmove",  function (e) { onMove(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener("touchend",   onUp);
+
+  /* a drag that happens to end on a link must not open it */
+  document.addEventListener("click", function (e) {
+    if (moved > 6 && e.target.closest("a")) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  /* keys: arrows move card to card, up/down switch page */
+  window.addEventListener("keydown", function (e) {
+    if (showingAbout) {
+      var page = aboutPage.clientHeight;
+      if (e.key === "Escape")            { toggle(); }
+      else if (e.key === "ArrowDown")    { e.preventDefault(); glideTo(targetY + 120); }
+      else if (e.key === "ArrowUp")      { e.preventDefault(); glideTo(targetY - 120); }
+      else if (e.key === "PageDown" || e.key === " ") { e.preventDefault(); glideTo(targetY + page * 0.85); }
+      else if (e.key === "PageUp")       { e.preventDefault(); glideTo(targetY - page * 0.85); }
+      else if (e.key === "Home")         { e.preventDefault(); glideTo(0); }
+      else if (e.key === "End")          { e.preventDefault(); glideTo(maxScroll()); }
+      return;
+    }
+    if (e.key === "ArrowRight")     { work.goToIndex(work.index + 1); }
+    else if (e.key === "ArrowLeft") { work.goToIndex(work.index - 1); }
+    else if (e.key === "ArrowUp")   { toggle(); }
+  });
+
+  window.addEventListener("resize", function () { work.paint(); layoutMini(); updateMini(); });
+
+  work.paint();
+  updateMini();
+})();
+</script>
+</body>
+</html>
